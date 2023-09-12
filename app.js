@@ -33,11 +33,6 @@ app.use(editEmployee);
 app.use(sendPdfFile);
 app.use(login);
 
-// app.use(express.static("build"));
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "build", "index.html"));
-// });
-
 app.listen(port, () => {
   console.log(`Server connected port`, port);
 });

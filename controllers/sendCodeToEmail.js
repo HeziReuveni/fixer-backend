@@ -13,9 +13,11 @@ const sendCodeToEmail = async (req, res) => {
     if (emailExist) {
       return res.status(400).send("Email are a exist");
     }
+
     const codes = new UserCodes({
       opt: code,
     });
+
     if (!codes) {
       return res.status(400).send("Unable to generate a code for the user");
     }
@@ -23,33 +25,35 @@ const sendCodeToEmail = async (req, res) => {
   } catch (error) {
     res.send(error, "Failed to create user code");
   }
-  const msg = {
-    from: "fixer.platform@gmail.com",
-    to: email,
-    subject: "הודעה מאת Fixer",
-    text: `הסיסמה שלך לאימות: ${code}`,
-  };
-  nodemailer
-    .createTransport({
-      service: "gmail",
-      auth: {
-        user: "fixer.platform@gmail.com",
-        pass: "qxxmooorttifdbuk",
-      },
-      port: 465,
-      host: "smtp.gmail.com",
-    })
-    .sendMail(msg, (err) => {
-      if (err) {
-        return res.status(400).send("Failed to send email");
-      } else {
-        return res
-          .status(200)
-          .send("User authentication message sent to: " + email);
-      }
-    });
-};
 
-nodemailer.createTransport;
+
+  
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+       user: "fixer.platform.auth@gmail.com",
+       pass: "iwwnnphgwttccesc"
+       
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+ });
+ 
+ const mailOptions = {
+    from: "fixer.platform.auth@gmail.com",
+    to: email,
+    subject: "קוד האימות של מאת Fixer",
+    text:"קוד האימות שלך הינו - " + code
+ };
+ 
+ transporter.sendMail(mailOptions, function(error){
+    if(error){
+       res.status(400).send(error);
+    }else{
+      res.status(200).send("Email sent to: " + email);
+    }
+ });
+}
 
 module.exports = { sendCodeToEmail };
